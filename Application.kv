@@ -1,0 +1,429 @@
+WindowManager:
+    MainScreen:
+        id: main_sec
+
+    ShuffleScreen:
+        id: shuffle_sec
+
+#: import Factory kivy.factory.Factory
+
+<MainScreen>:   
+    name:"main"
+    MainScreenWidget:
+        id:main_widget
+
+<ShuffleScreen>:
+    name:"shuffle_win"
+    ShuffleScreenWidget:
+
+<MainScreenWidget>:
+    size_hint:1,1
+    
+    MDFloatLayout:
+        size_hint:1,1
+
+        MDLabel:
+            text: 'NO POOL' if not root.ids.main_widget_pools.children else ''
+            opacity: 0.2
+            font_style: "H4"  
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1  
+            halign: "center"  
+            valign: "middle" 
+            size_hint: None, None
+            size: dp(400), dp(100)  
+            text_size: self.size 
+            pos_hint: {"center_x": 0.5, "center_y": 0.6}
+
+        MDScrollView:
+            id:main_widget_scroll
+            size_hint:1,0.8
+            pos_hint:{'top':1,'center_x':0.5}
+            do_scroll_y: True
+            do_scroll_x: False
+            scroll_type: ['bars', 'content']
+            bar_width:dp(2)
+            MDGridLayout:
+                size_hint_x: 1
+                id: main_widget_pools
+                cols: 2
+                spacing: '20dp'
+                padding: '20dp'
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: dp(150)
+                row_force_default: True
+                col_default_width: dp(150)
+                col_force_default: True
+                
+        MDIconButton:
+            icon_size:'35sp'
+            icon: "plus" 
+            theme_text_color: "Custom"
+            text_color: (1, 1, 1, 1) 
+            md_bg_color: (0.8, 0.9, 0.1, 1) 
+            pos_hint: {'right': 0.9,'y':0.1}
+            size_hint: None,None
+            size:dp(48),dp(48)
+            elevation: 0
+            on_press:   
+                Factory.pool_creation_popup().open()
+                Factory.pool_creation_popup().opened_by_plus=True
+                
+        MDIconButton:
+            icon_size:'35sp'
+            icon: "shuffle" 
+            theme_text_color: "Custom"
+            text_color: (1, 1, 1, 1)  
+            md_bg_color: (1.0, 0.5, 0.0, 1)
+            elevation: 0
+            on_press:
+                app.root.current="shuffle_win"
+                app.root.ids.main_sec.manager.transition.direction='right'
+            pos_hint: {'x':0.1,'y':0.1}
+            size:dp(48),dp(48)
+            size_hint: None,None
+            
+        MDRaisedButton:
+            text: 'DELETE MODE: ON' if root.delete_mode else 'DELETE MODE: OFF'
+            font_size: "14sp"
+            md_bg_color: (1, 0, 0, 0.8) if root.delete_mode else (0.2, 0.2, 0.2, 0.8)
+            pos_hint: {'center_x': 0.5, 'y': 0.1}
+            size_hint: 0.3, 0.08
+            on_release: root.delete_mode = not root.delete_mode
+            elevation: 0
+            
+<ShuffleScreenWidget>:
+    size_hint:1,1
+        
+    MDRaisedButton:
+        id: select_pool_button
+        text: 'Select Pool'
+        size_hint: 0.9, None
+        height: dp(40)
+        pos_hint: {'top': 0.95, 'center_x': 0.5}
+        elevation: 0
+        on_release: root.open_pool_menu()
+        md_bg_color:(0.2, 0.2, 0.2, 1)
+    
+    MDLabel:
+        id:label_text
+        text:''
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 0.8
+        pos_hint: {'center_x': 0.5,'center_y': 0.6}
+        size_hint: 0.8, None
+        height: dp(100)
+        text_size: self.size
+        font_style: "H5"
+        halign: "center"
+        valign: "middle"
+        
+    MDIconButton:
+        icon: "arrow-left"
+        size_hint: 0.2, 0.08
+        # size: dp(60), dp(60)
+        pos_hint: {'right': 0.9,'y':0.1}
+        md_bg_color: (0.3, 0.3, 0.3, 1)
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 1
+        elevation: 0
+        on_release: 
+            app.root.current='main'
+            app.root.ids.shuffle_sec.manager.transition.direction='left'
+            
+    MDIconButton:
+        icon: "cards"
+        size_hint: 0.2,0.08
+        # size: dp(100), dp(100)
+        pos_hint: {'x': 0.1,'y':0.1}
+        md_bg_color: app.theme_cls.accent_color
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 1
+        elevation: 0
+        on_release: root.randomize()
+
+<pool_creation_popup>:
+    type: "custom"
+    content_cls: Factory.pool_creation_content()
+    size_hint: 0.9, 0.85
+    auto_dismiss: False
+    elevation: 0
+    pos_hint:{'top':1}
+
+    radius: [12, 12, 12, 12]
+<pool_creation_content>:
+    orientation: 'vertical'
+    spacing: dp(10)
+    size_hint_y: None
+    height: dp(350)
+    # md_bg_color: [0.18, 0.18, 0.25, 0.1]
+
+    MDBoxLayout:
+        orientation: 'horizontal'
+        size_hint: 1, None
+        height: dp(40)
+        spacing: dp(5)
+        pos_hint:{'top':1}
+        
+        MDRaisedButton:
+            id: name_btn
+            text: 'Name'
+            size_hint: 0.5, 1
+            md_bg_color: [1, 0.65, 0.15, 1] if wind_manager.current=="list_name" else [0.2, 0.2, 0.3, 0.6]
+            elevation: 0
+            on_release: 
+                wind_manager.current="list_name"
+                list_name.manager.transition.direction='right'
+                
+        MDRaisedButton:
+            id: list_btn
+            text: 'List'
+            size_hint: 0.5, 1
+            md_bg_color: [1, 0.65, 0.15, 1] if wind_manager.current=="list_screen" else [0.2, 0.2, 0.3, 0.6]
+            elevation: 0
+            on_release: 
+                wind_manager.current="list_screen"
+                list.manager.transition.direction='left'
+    
+    Pool_popup_WindowManager:
+        id: wind_manager
+        size_hint: 1, 1
+        
+        Pool_name_screen:
+            id: list_name
+            name: "list_name"
+            Name_list_widget:
+                id: ln_widget
+                
+        Pool_list_screen:
+            id: list
+            name: "list_screen"
+            List_widget:
+                id: l_widget
+    
+    MDBoxLayout:
+        orientation: 'horizontal'
+        size_hint: 1, None
+        height: dp(40)
+        spacing: dp(10)
+    
+        # padding:dp(0),dp(0),dp(0),dp(10)
+        MDRaisedButton:
+            id: save_btn
+            text: 'Save'
+            size_hint: 0.5, 1
+            md_bg_color: [1, 0.65, 0.15, 1]
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            elevation: 0
+            
+        MDRaisedButton:
+            id: close_btn
+            text: 'Close'
+            size_hint: 0.5, 1
+            md_bg_color: [0.4, 0.4, 0.4, 0.8]
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 0.9
+            elevation: 0
+    #padding
+    MDBoxLayout:
+        size_hint: 1, None
+        height: dp(10)
+        MDLabel:
+            text:''
+            
+            
+
+
+<Name_list_widget>:
+    
+    MDTextField:
+        id: name_entered
+        multiline: False
+        font_size: '15sp'
+        size_hint: 0.8, None
+        height: dp(50)
+        pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+        hint_text: "Enter pool name"
+        theme_text_color: "Primary"
+        text_color_normal: 1, 1, 1, 1
+        text_color_focus: 1, 1, 1, 1
+        line_color_normal: 1, 1, 1, 0.5
+        line_color_focus: app.theme_cls.primary_color
+        hint_text_color_normal: 1, 1, 1, 0.5
+        hint_text_color_focus: 1, 1, 1, 0.7
+        on_text_validate: root.show_validation()
+
+    MDIcon:
+        id: RedX
+        icon: "close-circle"
+        size_hint: None, None
+        size: dp(24), dp(24)
+        pos_hint: {'center_x': 0.85, 'center_y': 0.6}
+        theme_text_color: "Custom"
+        text_color: 1, 0, 0, 1
+        opacity: 1 if not root.enter_pressed else 0
+        
+    MDIcon:
+        id: GreenCheck
+        icon: "check-circle"
+        size_hint: None, None
+        size: dp(24), dp(24)
+        pos_hint: {'center_x': 0.85, 'center_y': 0.6}
+        theme_text_color: "Custom"
+        text_color: 0, 1, 0, 1
+        opacity: 1 if root.enter_pressed else 0
+
+<List_widget>:
+    spacing: dp(5)
+    orientation: 'vertical'
+    size_hint: 1, 1
+    
+    # MDBoxLayout:
+    #     padding: dp(10)
+    #     size_hint: 1, None
+    #     height: dp(60)
+        
+    MDTextField:
+        id: list_entered
+        multiline: False
+        font_size: '18sp'
+        theme_text_color: "Primary"
+        hint_text: "Enter item name then press Enter"
+        pos_hint: {'top': 0.76}
+        hint_text_color: 1, 1, 1, 0.7
+        text_color_normal: 1, 1, 1, 1
+        text_color_focus: 1, 1, 1, 1
+        line_color_normal: 1, 1, 1, 0.8
+        line_color_focus: app.theme_cls.primary_color
+        # mode: "fill"
+        # fill_color: app.theme_cls.bg_dark
+        padding: [15, 15]
+        on_text_validate:
+            root.add_item()
+            self.focus = True
+            
+    MDScrollView:
+        id: scroll_view
+        size_hint: 1, 1
+        do_scroll_y: True
+        do_scroll_x: False
+        bar_width: dp(5)
+        pos_hint:{'top':0.5}
+        MDGridLayout:
+            id: list_items
+            cols: 2
+            spacing: dp(10)
+            padding: dp(10)
+            size_hint_y: None        
+            height: self.minimum_height
+            row_default_height: dp(40)
+            row_force_default: True
+
+<item_of_list>:
+    type: "custom"
+    content_cls: Factory.item_edit_content()
+    size_hint: 0.8, None
+    height: dp(200)
+    auto_dismiss: True
+    elevation: 0
+<item_edit_content>:
+    orientation: 'vertical'
+    spacing: dp(10)
+    size_hint_y: None
+    height: dp(150)
+    
+    MDTextField:
+        id: item_name
+        font_size: '15sp'
+        size_hint: 1, None
+        height: dp(40)
+        hint_text: "Item name"
+        theme_text_color: "Primary"
+        text_color_normal: 1, 1, 1, 1
+        text_color_focus: 1, 1, 1, 1
+        line_color_normal: 1, 1, 1, 0.5
+        line_color_focus: app.theme_cls.primary_color
+        hint_text_color_normal: 1, 1, 1, 0.5
+        hint_text_color_focus: 1, 1, 1, 0.7
+        multiline: False
+            
+    MDLabel:
+        id: label_text
+        text: ''
+        theme_text_color: "Primary"
+        halign: "center"
+        size_hint: 1, None
+        height: dp(30)
+        font_style: "Body1"
+        
+    MDBoxLayout:
+        spacing: dp(10)
+        size_hint: 1, None
+        height: dp(40)
+        orientation: 'horizontal'
+        
+        MDRaisedButton:
+            id: edit_btn
+            text: 'Edit'
+            size_hint: 0.5, 1
+            md_bg_color:[1, 0.65, 0.15, 1]
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            elevation: 0
+
+        MDRaisedButton:
+            id: remove_btn
+            text: 'Remove'
+            size_hint: 0.5, 1
+            md_bg_color:  [0.4, 0.4, 0.4, 0.8] 
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 0.9
+            elevation: 0
+    MDBoxLayout:
+        size_hint: 1, None
+        height: dp(10)
+        MDLabel:
+            text:''
+            
+<CardsPopUp>:
+    type: "custom"
+    content_cls: Factory.cards_content()
+    size_hint: 0.8, None
+    height: dp(220)
+    auto_dismiss: False
+    elevation: 0
+    md_bg_color: 0.15, 0.15, 0.15, 1
+    pos_hint:{'top':0.8}
+<cards_content>:
+    orientation: 'vertical'
+    # spacing: dp(5)
+    # padding: dp(20)
+    size_hint_y: None
+    height: dp(200)
+    
+    MDSeparator:
+        height: dp(3)
+        color: 1, 0.65, 0.15, 1  
+    MDLabel:
+        id: label_text
+        text: ''
+        theme_text_color: "Primary"
+        halign: "center"
+        valign: "middle"
+        size_hint: 1, 0.8
+        # text_size: dp(100)
+        font_style: "H6"
+        bold: True
+        
+    MDRaisedButton:
+        id: next
+        text: 'Next'
+        size_hint: 1, None
+        height: dp(50)
+        pos_hint: {'center_x': 0.5}
+        md_bg_color: (1, 0.65, 0.15, 1)
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 1
+        elevation: 0
