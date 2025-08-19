@@ -10,13 +10,11 @@ A sleek mobile application built with Python, Kivy, and KivyMD that allows users
 
 ## 📱 Screenshots
 
-![Asset](Assets/MC%20Cards_1.jpg)
-![Asset](Assets/MC%20Cards_2.jpg)
-![Asset](Assets/MC%20Cards_3.jpg)
-![Asset](Assets/MC%20Cards_4.jpg)
-![Asset](Assets/MC%20Cards_5.jpg)
-![Asset](Assets/MC%20Cards_6.jpg)
-![Asset](Assets/MC%20Cards_7.jpg)
+| ![Asset](Assets/MC%20Cards_1.jpg) | ![Asset](Assets/MC%20Cards_2.jpg) | ![Asset](Assets/MC%20Cards_3.jpg) |
+|----------------------------------|----------------------------------|----------------------------------|
+| ![Asset](Assets/MC%20Cards_4.jpg) | ![Asset](Assets/MC%20Cards_5.jpg) | ![Asset](Assets/MC%20Cards_6.jpg) |
+| ![Asset](Assets/MC%20Cards_7.jpg) |                                  |                                  |
+
 
 ## ✨ Features
 
